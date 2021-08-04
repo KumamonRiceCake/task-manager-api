@@ -234,3 +234,14 @@ test('Should not update other users task', async () => {
     })
     .expect(404)
 })
+
+test('Should upload image to a task', async () => {
+    await request(app)
+        .post(`/tasks/${taskOne._id}/image`)
+        .set('Authorization', `Bearer ${userOne.tokens[0].token}`)
+        .attach('image', 'tests/fixtures/sample.jpg')  // This should be from the root of the project
+        .expect(200)
+
+    const task = await Task.findById(taskOne._id)
+    expect(task.image).toEqual(expect.any(Buffer))
+})

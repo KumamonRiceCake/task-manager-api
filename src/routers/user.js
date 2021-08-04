@@ -1,8 +1,8 @@
 const express = require('express')
-const multer = require('multer')
 const sharp = require('sharp')
 const User = require('../models/user')
 const auth = require('../middleware/auth')
+const upload = require('./utils/upload')
 const { sendWelcomeEmail, sendCancelationEmail } = require('../emails/account')
 const router = new express.Router()
 
@@ -81,19 +81,6 @@ router.delete('/users/me', auth, async (req, res) => {
         res.send(req.user)
     } catch (e) {
         res.status(500).send()
-    }
-})
-
-const upload = multer({
-    limits: {
-        fileSize: 1000000
-    },
-    fileFilter(req, file, cb) {
-        if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
-            return cb(new Error('Please upload an image'))
-        }
-
-        cb(undefined, true)
     }
 })
 
